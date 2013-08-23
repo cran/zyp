@@ -9,16 +9,22 @@
   method of computing nonlinear prewhitened trends.
 }
 \usage{
-zyp.trend.vector(data, method=c("yuepilon", "zhang"), conf.intervals=TRUE)
-zyp.zhang(data, conf.intervals=TRUE)
-zyp.yuepilon(data, conf.intervals=TRUE)
+zyp.trend.vector(data, method=c("yuepilon", "zhang"),
+conf.intervals=TRUE, preserve.range.for.sig.test=TRUE)
+zyp.zhang(data, conf.intervals=TRUE, preserve.range.for.sig.test=TRUE)
+zyp.yuepilon(data, conf.intervals=TRUE, preserve.range.for.sig.test=TRUE)
 }
 \arguments{
   \item{data}{the input vector.}
 
   \item{method}{the prewhitened trend method to use.}
 
-  \item{conf.intervals}{whether to compute confidence intervals.}
+  \item{conf.intervals}{whether to compute a 95 percent confidence
+  interval based on all possible slopes.}
+
+  \item{preserve.range.for.sig.test}{whether to re-inflate values by
+  dividing by (1 - ac) following removal of autocorrelation prior to
+  computation of significance.}
 }
 \details{
   This routine computes a prewhitened nonlinear trend on a vector of

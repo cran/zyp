@@ -19,6 +19,13 @@ and the data is detrended by the slope and the AR(1) is computed for the detrend
 referred to as the Trend Free Pre-whitening (TFPW) procedure. The residuals should be an independent 
 series. The trend and residuals are then blended together. The Mann-Kendall test is the applied to the
 blended series to assess the significance of the trend.
+
+One variance of this package, at least from the Yue and Pilon method, is
+that by default the values used to compute significance are reinflated
+by dividing by (1 - AR(1)). Empirically this provides better
+results. However, if you do not desire this behaviour, it can be
+controlled using the parameter 'preserve.range.for.sig.test'; setting
+this to 'FALSE' should give results which follow the Yue and Pilon paper exactly.
 }
 \references{
 \cite{Wang, X.L. and Swail, V.R., 2001. Changes in extreme wave heights
@@ -32,6 +39,10 @@ blended series to assess the significance of the trend.
 \cite{Zhang, X., Vincent, L.A., Hogg, W.D. and Niitsoo, A.,
   2000. Temperature and Precipitation Trends in Canada during the
   20th Century. Atmosphere-Ocean 38(3): 395-429.}
+
+\cite{Sen, P.K., 1968. Estimates of the Regression Coefficient Based on
+  Kendall's Tau. Journal of the American Statistical Association
+  Vol. 63, No. 324: 1379-1389.}
 }
 \seealso{
 \code{\link{zyp.trend.csv}}, \code{\link{zyp.trend.vector}}.

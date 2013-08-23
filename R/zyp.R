@@ -20,7 +20,7 @@ zyp.sen <- function(formula, dataframe) {
   intercepts <- y - slope * x
   intercept <- median(intercepts)
 
-  res <- list(coefficients=c(intercept, slope), slopes = slopes, intercepts = intercepts, rank=2, residuals=(x - slope * y + intercept), x=x, y=y)
+  res <- list(coefficients=c(intercept, slope), slopes = slopes, intercepts = intercepts, rank=2, residuals=(y - slope * x + intercept), x=x, y=y)
   
   names(res$coefficients) = c("Intercept", term[2])
   class(res) = c("zyp", "lm")
@@ -50,7 +50,7 @@ confint.zyp <- function (object, parm, level = 0.95, ...) {
   return(res)
 }
 
-zyp.zhang <- function(data, conf.intervals=TRUE) {
+zyp.zhang <- function(data, conf.intervals=TRUE, preserve.range.for.sig.test=TRUE) {
   data <- as.numeric(as.vector(data))
   n <- length(data)
   t <- 1:n
@@ -70,7 +70,7 @@ zyp.zhang <- function(data, conf.intervals=TRUE) {
     y <- data
     yt <- 1:n
   } else {
-    y <- (data[2:n] - c * data[1:(n-1)]) / (1 - c)
+    y <- ifelse(rep(preserve.range.for.sig.test, n - 1), (data[2:n] - c * data[1:(n-1)]) / (1 - c), data[2:n] - c * data[1:(n-1)])
     yt <- 1:(n-1)
   }
 
@@ -134,7 +134,7 @@ zyp.zhang <- function(data, conf.intervals=TRUE) {
   return(ret)
 }
 
-zyp.yuepilon <- function(data, conf.intervals=TRUE) {
+zyp.yuepilon <- function(data, conf.intervals=TRUE, preserve.range.for.sig.test=TRUE) {
   dat <- as.numeric(as.vector(data))
 
   n <- length(dat)
@@ -167,14 +167,14 @@ zyp.yuepilon <- function(data, conf.intervals=TRUE) {
   # Calculate AR(1)
   ac <- acf(xt.prime, lag.max=1, plot=FALSE, na.action=na.pass)$acf[2]
 
-  yt.prime <- (xt.prime[2:n] - ac * xt.prime[1:(n-1)]) / (1 - ac)
-
   # Throw out data that is insufficient to compute the autocorrelation function
   if(is.na(ac)) {
     return(ret)
   }
 
-  # Add the trend back into the residual
+  yt.prime <- ifelse(rep(preserve.range.for.sig.test, n - 1), (xt.prime[2:n] - ac * xt.prime[1:(n-1)]) / (1 - ac), xt.prime[2:n] - ac * xt.prime[1:(n-1)])
+  
+  ## Add the trend back into the residual
   yt <- yt.prime[1:(n-1)] + trend * t.prime
   dmap.prime <- which(!is.na(yt))        
   ytnm <- as.numeric(yt[dmap.prime])
@@ -198,18 +198,18 @@ zyp.yuepilon <- function(data, conf.intervals=TRUE) {
 }
 
 # Applies either a Yue Pilon or Zhang trend calculation to a vector of data
-zyp.trend.vector <- function(data, method=c("yuepilon", "zhang"), conf.intervals=TRUE) {
+zyp.trend.vector <- function(data, method=c("yuepilon", "zhang"), conf.intervals=TRUE, preserve.range.for.sig.test=TRUE) {
   switch(match.arg(method),
-         yuepilon = zyp.yuepilon(data, conf.intervals),
-         zhang    = zyp.zhang(data, conf.intervals)
+         yuepilon = zyp.yuepilon(data, conf.intervals, preserve.range.for.sig.test),
+         zhang    = zyp.zhang(data, conf.intervals, preserve.range.for.sig.test)
          )
 }
 
 # Applies either a Yue Pilon or Zhang trend calculation to a data frame where there is one station per line with no metadata (and each year/month is a column of data)
-zyp.trend.dataframe <- function(indat, metadata.cols, method=c("yuepilon", "zhang"), conf.intervals=TRUE) {
+zyp.trend.dataframe <- function(indat, metadata.cols, method=c("yuepilon", "zhang"), conf.intervals=TRUE, preserve.range.for.sig.test=TRUE) {
   trend <- switch(match.arg(method),
-           yuepilon = as.data.frame(t(apply(indat[, (1 + metadata.cols):ncol(indat)], 1, zyp.yuepilon, conf.intervals))),
-           zhang    = as.data.frame(t(apply(indat[, (1 + metadata.cols):ncol(indat)], 1, zyp.zhang, conf.intervals))) )
+           yuepilon = as.data.frame(t(apply(indat[, (1 + metadata.cols):ncol(indat)], 1, zyp.yuepilon, conf.intervals, preserve.range.for.sig.test))),
+           zhang    = as.data.frame(t(apply(indat[, (1 + metadata.cols):ncol(indat)], 1, zyp.zhang, conf.intervals, preserve.range.for.sig.test))) )
 
   if(metadata.cols > 0) {
     trend <- cbind(indat[,1:metadata.cols], trend)
@@ -220,9 +220,9 @@ zyp.trend.dataframe <- function(indat, metadata.cols, method=c("yuepilon", "zhan
 }
 
 # Applies either a Yue Pilon or Zhang trend calculation to a file in the format "metadata_1,...,metadata_n,year1,year2,...", where n is the number of metadata columns and the timeseries extending across the row
-zyp.trend.csv <- function(filename, output.filename, metadata.cols, method=c("yuepilon", "zhang"), conf.intervals=TRUE, csv.header=TRUE) {
+zyp.trend.csv <- function(filename, output.filename, metadata.cols, method=c("yuepilon", "zhang"), conf.intervals=TRUE, csv.header=TRUE, preserve.range.for.sig.test=TRUE) {
   indat <- read.csv(filename, csv.header)
-  write.csv(zyp.trend.dataframe(indat, metadata.cols, method, conf.intervals), output.filename, row.names=FALSE)
+  write.csv(zyp.trend.dataframe(indat, metadata.cols, method, conf.intervals, preserve.range.for.sig.test), output.filename, row.names=FALSE)
 }
 
     

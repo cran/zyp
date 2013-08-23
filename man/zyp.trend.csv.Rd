@@ -10,8 +10,11 @@
   nonlinear prewhitened trends.
 }
 \usage{
-zyp.trend.dataframe(indat, metadata.cols, method=c("yuepilon", "zhang"), conf.intervals=TRUE)
-zyp.trend.csv(filename, output.filename, metadata.cols, method=c("yuepilon", "zhang"), conf.intervals=TRUE, csv.header=TRUE)
+zyp.trend.dataframe(indat, metadata.cols, method=c("yuepilon", "zhang"),
+                    conf.intervals=TRUE, preserve.range.for.sig.test=TRUE)
+zyp.trend.csv(filename, output.filename, metadata.cols,
+              method=c("yuepilon", "zhang"), conf.intervals=TRUE,
+              csv.header=TRUE, preserve.range.for.sig.test=TRUE)
 }
 \arguments{
   \item{indat}{the input data frame.}
@@ -24,8 +27,12 @@ zyp.trend.csv(filename, output.filename, metadata.cols, method=c("yuepilon", "zh
 
   \item{method}{the prewhitened trend method to use.}
 
-  \item{conf.intervals}{whether to compute confidence intervals using a
-    Wilcoxon test (slow).}
+  \item{conf.intervals}{whether to compute a 95 percent confidence
+  interval based on all possible slopes.}
+
+  \item{preserve.range.for.sig.test}{whether to re-inflate values by
+  dividing by (1 - ac) following removal of autocorrelation prior to
+  computation of significance.}
 
   \item{csv.header}{whether the input CSV file has a header.}
 }
