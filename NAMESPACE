@@ -8,3 +8,9 @@ exportPattern(".")
 import(
   Kendall
 )
+
+S3method(confint, zyp)
+
+importFrom("stats", "acf", "confint", "lm", "median", "na.pass",
+           "qnorm", "terms", "var")
+importFrom("utils", "read.csv", "write.csv")
