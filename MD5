@@ -1,9 +1,9 @@
 bbef7b22d32aa197049f35a76df9e6bb *ChangeLog
-f3469cb1287cc94f1763d55db7b54bd7 *DESCRIPTION
-f77509a565ae5d6e814c8c0b4cefd753 *NAMESPACE
-2297dcc2ec07f710b656b833bbbcb684 *R/zyp.R
+017583b4a3f061b8f05d2292d488f5c1 *DESCRIPTION
+4b55c8965b16bcffe39313bf54cee60e *NAMESPACE
+6a313f01a6704c87ad38a1016d407c7a *R/zyp.R
 cb1cd59559610ac2a1f0a458f4a10f35 *man/confint.zyp.Rd
-e5418988f110c8566c8dc3596414c9f6 *man/zyp.Rd
+1799633a9facf9d313a7ecfde2f7341f *man/zyp.Rd
 e23551d722d2c7de1f4c9415cf4f2e9c *man/zyp.sen.Rd
-fedf8182f68a3c8b59222d37058fad7c *man/zyp.trend.csv.Rd
-839d245a467da1c88d092e197f8f8ae9 *man/zyp.trend.vector.Rd
+0971345bf759a47ba739c9b6224fa135 *man/zyp.trend.csv.Rd
+11558d44eee4345803a2848564443d2c *man/zyp.trend.vector.Rd
